@@ -1,0 +1,32 @@
+name: timer
+description: A new Flutter project.
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.2.2 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # the cupertino_icons
+  cupertino_icons: ^0.1.2
+  #状态管理
+  provider: ^3.0.0+1
+  #吐司
+  fluttertoast: ^3.1.0
+  # 声音播放
+  audioplayers: ^0.13.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+
+flutter:
+  # the material Icons class.
+  uses-material-design: true
+  assets:
+    - assets/mp3/
+
