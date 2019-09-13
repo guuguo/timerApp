@@ -1,19 +1,27 @@
 import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:timer/entiy/ExeciseEntity.dart';
 import 'package:timer/page/timer/model/timer_model.dart';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:timer/view/simple_widget.dart';
 
 class TimerPage extends StatefulWidget {
+  TimerPage(this.exercise);
+
+  ExerciseEntity exercise;
+
   @override
   _TimerPageState createState() => _TimerPageState();
 }
 
 class _TimerPageState extends State<TimerPage> {
   Timer timer;
+  var model = TimerModel();
+
   @override
   void dispose() {
     timer.cancel();
@@ -21,10 +29,14 @@ class _TimerPageState extends State<TimerPage> {
   }
 
   AudioCache audioPlayer;
+
   @override
   void initState() {
+    print('initState');
     audioPlayer = AudioCache(prefix: 'mp3/');
     AudioPlayer.logEnabled = false;
+    model.exercise = widget.exercise;
+    print('setexercise');
     super.initState();
   }
 
@@ -38,10 +50,12 @@ class _TimerPageState extends State<TimerPage> {
     await audioPlayer.play('Eg_10_take_a_rest.mp3');
   }
 
-  var model = TimerModel();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: CupertinoNavigationBar(
+        middle: Text(widget.exercise.title),
+      ),
       body: ChangeNotifierProvider<TimerModel>.value(
         value: model,
         child: Consumer<TimerModel>(
@@ -62,15 +76,19 @@ class _TimerPageState extends State<TimerPage> {
                                   alignment: Alignment.center,
                                   margin: EdgeInsets.all(10),
                                   padding: EdgeInsets.all(10),
-                                  decoration: RoundDecoration.circular(color: Color(0xFF352ab4), radius: 10),
+                                  decoration: RoundDecoration.circular(
+                                      color: Color(0xFF352ab4), radius: 10),
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: <Widget>[
                                       Padding(
-                                        padding: const EdgeInsets.only(top: 30.0),
+                                        padding:
+                                            const EdgeInsets.only(top: 30.0),
                                         child: Text(
                                           model.getCurrentTitle(),
-                                          style: Theme.of(context).primaryTextTheme.title,
+                                          style: Theme.of(context)
+                                              .primaryTextTheme
+                                              .title,
                                         ),
                                       ),
                                       Center(
@@ -79,7 +97,9 @@ class _TimerPageState extends State<TimerPage> {
                                           style: Theme.of(context)
                                               .primaryTextTheme
                                               .display4
-                                              .copyWith(fontWeight: FontWeight.w900, fontSize: 100),
+                                              .copyWith(
+                                                  fontWeight: FontWeight.w900,
+                                                  fontSize: 100),
                                         ),
                                       ),
                                     ],
@@ -103,13 +123,14 @@ class _TimerPageState extends State<TimerPage> {
 
   Widget buildOpButton(BuildContext context, TimerModel model) {
     return Padding(
-      padding: const EdgeInsets.only(left:10.0,right:10,bottom: 10),
+      padding: const EdgeInsets.only(left: 10.0, right: 10, bottom: 10),
       child: Row(
         children: <Widget>[
           Expanded(
             flex: 2,
             child: MaterialButton(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
               height: double.infinity,
               color: Theme.of(context).accentColor,
               onPressed: () {
@@ -126,7 +147,10 @@ class _TimerPageState extends State<TimerPage> {
                   }
                 });
               },
-              child: Text('开始',style: Theme.of(context).primaryTextTheme.body1,),
+              child: Text(
+                '开始',
+                style: Theme.of(context).primaryTextTheme.body1,
+              ),
             ),
           ),
           Width(10),
@@ -134,24 +158,32 @@ class _TimerPageState extends State<TimerPage> {
             children: <Widget>[
               Expanded(
                 child: MaterialButton(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
                   color: Theme.of(context).accentColor,
                   onPressed: () {
                     timer?.cancel();
                   },
-                  child: Text('暂停',style: Theme.of(context).primaryTextTheme.body1,),
+                  child: Text(
+                    '暂停',
+                    style: Theme.of(context).primaryTextTheme.body1,
+                  ),
                 ),
               ),
               Height(10),
               Expanded(
                 child: MaterialButton(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
                   color: Theme.of(context).accentColor,
                   onPressed: () {
                     timer?.cancel();
                     model.reset();
                   },
-                  child: Text('停止',style: Theme.of(context).primaryTextTheme.body1,),
+                  child: Text(
+                    '停止',
+                    style: Theme.of(context).primaryTextTheme.body1,
+                  ),
                 ),
               ),
             ],

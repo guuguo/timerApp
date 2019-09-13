@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:timer/entiy/ExeciseEntity.dart';
 
 enum NextSecondStatus {
   ///休息开始
@@ -11,7 +12,7 @@ enum NextSecondStatus {
   end,
 
   ///运动开始
-  exerciseStart,
+ exerciseStart,
 
   ///运动中
   exercising,
@@ -19,33 +20,28 @@ enum NextSecondStatus {
 
 class TimerModel extends ChangeNotifier {
   List<TimerBean> list = [];
-  TimerModel() {
-    _initList();
-  }
+
+  TimerModel() ;
 
   ///初始化列表
   void _initList() {
     list.clear();
-    for (var i = 0; i < _titleList.length; i++) {
-      final title = _titleList[i];
-      for (var j = 0; j < _exerciseTimesPerAction; j++) {
-        list.add(TimerBean(Duration(seconds: _doTime), title));
-        list.add(TimerBean(Duration(seconds: _relaxTime), "休息"));
+    for (var i = 0; i < _exercise.titleList.length; i++) {
+      final title =_exercise.titleList[i];
+      for (var j = 0; j <_exercise.exerciseTimesPerAction; j++) {
+        list.add(TimerBean(Duration(seconds:_exercise.doTime), title));
+        list.add(TimerBean(Duration(seconds:_exercise.relaxTime), "休息"));
       }
     }
   }
 
-  ///运动时间
-  var _doTime = 10;
+  ExerciseEntity _exercise ;
 
-  ///休息时间
-  var _relaxTime = 20;
 
-  ///动作数组
-  var _titleList = ["抬手俯卧撑", "下斜俯卧撑", "蜘蛛俯卧撑", "平移俯卧撑", "碰肩俯卧撑"];
-
-  ///每个动作的组数
-  var _exerciseTimesPerAction = 4;
+  set exercise(ExerciseEntity value) {
+    _exercise = value;
+    _initList();
+  }
 
   ///当前秒数
   int secondCount = 0;
@@ -84,6 +80,7 @@ class TimerModel extends ChangeNotifier {
   }
 
   bool isActive() => index != 0 || secondCount != 0;
+
   String getCurrentTitle() => list[index].title;
 
   ///恢复初始
@@ -93,11 +90,14 @@ class TimerModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  String showTimeStr() => isActive() ? (list[index].duration.inSeconds - secondCount).toString() : '未开始';
+  String showTimeStr() => isActive()
+      ? (list[index].duration.inSeconds - secondCount).toString()
+      : '未开始';
 }
 
 class TimerBean {
   Duration duration;
   String title;
+
   TimerBean(this.duration, this.title);
 }
