@@ -35,3 +35,4 @@ final handBean = ExerciseEntity(
     relaxTime: 60,
     titleList: ["手臂弯举7.5-10kg", "手臂爆发弯举10-12.5kg", "屈臂悬垂", "三头肌下拉","躺平三后举"],
     exerciseTimesPerAction: 4);
+

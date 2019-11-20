@@ -1,10 +1,5 @@
-import 'dart:async';
-
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:timer/page/timer/model/timer_model.dart';
-import 'package:audioplayers/audio_cache.dart';
 import 'package:timer/routers/router.dart';
 import 'package:timer/view/simple_widget.dart';
 
@@ -40,15 +35,17 @@ class _HomePageState extends State<HomePage> {
             return SafeArea(
               child: ListView.builder(
                   padding: EdgeInsets.all(15),
-                  itemCount: model.list.length,
+                  itemCount: model.list.length + 1,
                   itemBuilder: (c, index) {
                     final it = model.list[index];
                     final color = colors[index % 5];
 
                     return GestureDetector(
                       onTap: () {
-                        Navigator.of(context)
-                            .pushNamed(RouteName.exercisePage, arguments: it);
+                        if (index < model.list.length)
+                          Navigator.of(context)
+                              .pushNamed(RouteName.exercisePage, arguments: it);
+                        else {}
                       },
                       child: Container(
                         margin: EdgeInsets.all(10),
@@ -57,10 +54,7 @@ class _HomePageState extends State<HomePage> {
                         height: 100,
                         decoration: RoundDecoration.circular(color: color),
                         child: Text(it.title,
-                            style: Theme
-                                .of(context)
-                                .primaryTextTheme
-                                .body1),
+                            style: Theme.of(context).primaryTextTheme.body1),
                       ),
                     );
                   }),

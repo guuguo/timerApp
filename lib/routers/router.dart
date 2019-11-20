@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:timer/page/exercise/timer_page.dart';
 import 'package:timer/page/home/home_page.dart';
-import 'package:timer/page/timer/timer_page.dart';
 
 class RouteName {
   static const String rootPage = '/';
   static const String exercisePage = '/exercise';
+  static const String newExercisePage = '/newExercise';
+
 }
 
 class Router {

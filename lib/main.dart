@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:timer/page/home/home_page.dart';
-import 'package:timer/page/timer/timer_page.dart';
 
 import 'routers/router.dart';
 
