@@ -61,7 +61,7 @@ class _TimerPageState extends State<TimerPage> {
         value: model,
         child: Consumer<TimerModel>(
           builder: (context, model, child) {
-            final isRelax = model.list[model.index].title.contains('休息');
+            final isRelax = model.list[model.index].isRelax;
             return SafeArea(
               child: AnimatedTheme(
                 data: isRelax ? ThemeData.dark() : ThemeData.light(),
@@ -77,19 +77,15 @@ class _TimerPageState extends State<TimerPage> {
                                   alignment: Alignment.center,
                                   margin: EdgeInsets.all(10),
                                   padding: EdgeInsets.all(10),
-                                  decoration: RoundDecoration.circular(
-                                      color: Color(0xFF352ab4), radius: 10),
+                                  decoration: RoundDecoration.circular(color: Color(0xFF352ab4), radius: 10),
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: <Widget>[
                                       Padding(
-                                        padding:
-                                            const EdgeInsets.only(top: 30.0),
+                                        padding: const EdgeInsets.only(top: 30.0),
                                         child: Text(
                                           model.getCurrentTitle(),
-                                          style: Theme.of(context)
-                                              .primaryTextTheme
-                                              .title,
+                                          style: Theme.of(context).primaryTextTheme.subtitle1,
                                         ),
                                       ),
                                       Center(
@@ -98,9 +94,7 @@ class _TimerPageState extends State<TimerPage> {
                                           style: Theme.of(context)
                                               .primaryTextTheme
                                               .display4
-                                              .copyWith(
-                                                  fontWeight: FontWeight.w900,
-                                                  fontSize: 100),
+                                              .copyWith(fontWeight: FontWeight.w900, fontSize: 100),
                                         ),
                                       ),
                                     ],
@@ -129,67 +123,84 @@ class _TimerPageState extends State<TimerPage> {
         children: <Widget>[
           Expanded(
             flex: 2,
-            child: MaterialButton(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
-              height: double.infinity,
-              color: Theme.of(context).accentColor,
-              onPressed: () {
-                if (timer == null || !timer.isActive) timer?.cancel();
-                timer = Timer.periodic(Duration(seconds: 1), (timer) {
-                  final state = model.nextSecond();
-                  if (state == NextSecondStatus.end)
-                    timer.cancel();
-                  else if (state != NextSecondStatus.resting) {
-                    playTime();
-                  }
-                  if (state == NextSecondStatus.restStart) {
-                    playRestStart();
-                  }
-                });
-              },
-              child: Text(
-                '开始',
-                style: Theme.of(context).primaryTextTheme.body1,
+            child: Container(
+              padding: EdgeInsets.all(10),
+              decoration: ShapeDecoration(
+                  shape: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).dividerColor))),
+              child: ListView.builder(
+                physics: BouncingScrollPhysics(),
+                itemCount: model.list.length,
+                itemBuilder: (c, i) => Text(
+                  model.list[i].title,
+                  style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),
+                ),
               ),
             ),
           ),
           Width(10),
-          Column(
-            children: <Widget>[
-              Expanded(
-                child: MaterialButton(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  color: Theme.of(context).accentColor,
-                  onPressed: () {
-                    timer?.cancel();
-                  },
-                  child: Text(
-                    '暂停',
-                    style: Theme.of(context).primaryTextTheme.body1,
-                  ),
-                ),
-              ),
-              Height(10),
-              Expanded(
-                child: MaterialButton(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  color: Theme.of(context).accentColor,
-                  onPressed: () {
-                    timer?.cancel();
-                    model.reset();
-                  },
-                  child: Text(
-                    '停止',
-                    style: Theme.of(context).primaryTextTheme.body1,
-                  ),
-                ),
-              ),
-            ],
-          )
+          timer == null
+              ? buildStartButton()
+              : Column(
+                  children: <Widget>[
+                    Expanded(
+                      child: MaterialButton(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        color: Theme.of(context).accentColor,
+                        onPressed: () {
+                          timer?.cancel();
+                        },
+                        child: Text(
+                          '暂停',
+                          style: Theme.of(context).primaryTextTheme.body1,
+                        ),
+                      ),
+                    ),
+                    Height(10),
+                    Expanded(
+                      child: MaterialButton(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        color: Theme.of(context).accentColor,
+                        onPressed: () {
+                          timer?.cancel();
+                          timer=null;
+                          model.reset();
+                        },
+                        child: Text(
+                          '停止',
+                          style: Theme.of(context).primaryTextTheme.bodyText1,
+                        ),
+                      ),
+                    ),
+                  ],
+                )
         ],
+      ),
+    );
+  }
+
+  Widget buildStartButton() {
+    return MaterialButton(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      height: double.infinity,
+      color: Theme.of(context).accentColor,
+      onPressed: () {
+        if (timer?.isActive == true) timer?.cancel();
+        timer = Timer.periodic(Duration(seconds: 1), (timer) {
+          final state = model.nextSecond();
+          if (state == NextSecondStatus.end)
+            timer.cancel();
+          else if (state == NextSecondStatus.exercising) {
+            playTime();
+          }
+          if (state == NextSecondStatus.restStart) {
+            playRestStart();
+          }
+        });
+        setState(() {});
+      },
+      child: Text(
+        '开始',
+        style: Theme.of(context).primaryTextTheme.body1,
       ),
     );
   }

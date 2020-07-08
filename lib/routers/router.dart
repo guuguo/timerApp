@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:timer/page/exercise/timer_page.dart';
 import 'package:timer/page/home/home_page.dart';
+import 'package:timer/page/new_exercise/new_exercise_page.dart';
 
 class RouteName {
   static const String rootPage = '/';
@@ -23,6 +24,9 @@ class Router {
         break;
       case RouteName.exercisePage:
         pageRoute = MaterialBuilder(TimerPage(settings.arguments));
+        break;
+      case RouteName.newExercisePage:
+        pageRoute = MaterialBuilder(NewExercisePage());
         break;
       default:
         pageRoute = null;
