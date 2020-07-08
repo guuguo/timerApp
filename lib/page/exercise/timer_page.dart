@@ -25,7 +25,7 @@ class _TimerPageState extends State<TimerPage> {
 
   @override
   void dispose() {
-    timer.cancel();
+    timer?.cancel();
     super.dispose();
   }
 
@@ -85,7 +85,7 @@ class _TimerPageState extends State<TimerPage> {
                                         padding: const EdgeInsets.only(top: 30.0),
                                         child: Text(
                                           model.getCurrentTitle(),
-                                          style: Theme.of(context).primaryTextTheme.subtitle1,
+                                          style: Theme.of(context).primaryTextTheme.headline3,
                                         ),
                                       ),
                                       Center(
@@ -93,7 +93,7 @@ class _TimerPageState extends State<TimerPage> {
                                           model.showTimeStr(),
                                           style: Theme.of(context)
                                               .primaryTextTheme
-                                              .display4
+                                              .headline3
                                               .copyWith(fontWeight: FontWeight.w900, fontSize: 100),
                                         ),
                                       ),

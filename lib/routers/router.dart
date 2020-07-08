@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:timer/page/exercise/timer_page.dart';
 import 'package:timer/page/home/home_page.dart';
@@ -20,13 +21,13 @@ class Router {
 
     switch (settings.name) {
       case RouteName.rootPage:
-        pageRoute = MaterialBuilder(HomePage());
+        pageRoute = CupertinoBuilder(HomePage());
         break;
       case RouteName.exercisePage:
-        pageRoute = MaterialBuilder(TimerPage(settings.arguments));
+        pageRoute = CupertinoBuilder(TimerPage(settings.arguments));
         break;
       case RouteName.newExercisePage:
-        pageRoute = MaterialBuilder(NewExercisePage());
+        pageRoute = CupertinoBuilder(NewExercisePage());
         break;
       default:
         pageRoute = null;
@@ -51,6 +52,11 @@ class Router {
       ));
     }
   }
+}
+class CupertinoBuilder extends CupertinoPageRoute {
+  final Widget page;
+
+  CupertinoBuilder(this.page) : super(builder: (_) => page);
 }
 
 class MaterialBuilder extends MaterialPageRoute {
