@@ -18,6 +18,7 @@ dependencies:
   fluttertoast: ^3.1.0
   # 声音播放
   audioplayers: ^0.13.1
+  flushbar: ^1.10.4
 
 dev_dependencies:
   flutter_test:

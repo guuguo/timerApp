@@ -23,8 +23,10 @@ class SimpleExerciseEntity {
   ExerciseEntity toExerciseEntity() {
     final List<ActionEntity> list = [];
     titleList.forEach((title) {
-      list.add(ActionEntity(title: title, isRelax: false, duration: doTime, times: times));
-      list.add(ActionEntity(title: title, isRelax: true, duration: relaxTime));
+      for (var i = 0; i < exerciseTimesPerAction; ++i) {
+        list.add(ActionEntity(title: title, isRelax: false, duration: doTime, times: times));
+        list.add(ActionEntity(title: "休息", isRelax: true, duration: relaxTime));
+      }
     });
     return ExerciseEntity(title: title, actionList: list);
   }
