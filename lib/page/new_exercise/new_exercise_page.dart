@@ -1,11 +1,11 @@
-import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:timer/routers/router.dart';
+import 'package:timer/entiy/ExeciseEntity.dart';
 import 'package:timer/view/simple_widget.dart';
 
 import 'model/new_exercise_model.dart';
+import 'num_pad_dialog.dart';
 
 class NewExercisePage extends StatefulWidget {
   @override
@@ -45,11 +45,13 @@ class _NewExercisePageState extends State<NewExercisePage> {
                   Expanded(
                     child: Offstage(
                       offstage: model.entity == null,
-                      child: ListView.builder(
+                      child: ListView.separated(
+                        padding: EdgeInsets.only(bottom: 20),
+                        separatorBuilder: (c, i) => SizedBox(height: 10),
                         itemCount: model.entity.actionList.length + 1,
                         itemBuilder: (c, index) {
                           if (index == model.entity.actionList.length) return buildAddNewAcionWidget();
-                          return Text(model.entity.actionList[index].title);
+                          return buildAction(model.entity.actionList[index], index);
                         },
                       ),
                     ),
@@ -58,6 +60,35 @@ class _NewExercisePageState extends State<NewExercisePage> {
               ),
             );
           },
+        ),
+      ),
+    );
+  }
+
+  Widget buildAction(ActionEntity action, int index) {
+    return Container(
+      alignment: Alignment.center,
+      decoration:
+          RoundDecoration.circular(color: action.isRelax ? Colors.grey.shade400 : Colors.blue.shade700, radius: 4),
+      margin: const EdgeInsets.symmetric(horizontal: 15),
+      padding: EdgeInsets.symmetric(vertical: action.isRelax ? 4.0 : 10),
+      child: Container(
+        height: 30,
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: Center(
+                child: Text(
+                  action.title,
+                  style: TextStyle(
+                      color: Colors.white, fontSize: 16, fontWeight: action.isRelax ? FontWeight.normal : FontWeight.bold),
+                ),
+              ),
+            ),
+            Positioned(right: 10,top:0,bottom: 0,child: IconButton(icon:Icon(Icons.cancel,color: Colors.blueGrey,),padding: EdgeInsets.all(4),onPressed: (){
+              model.deleteAction(action);
+            },))
+          ],
         ),
       ),
     );
@@ -92,9 +123,15 @@ class _NewExercisePageState extends State<NewExercisePage> {
     return GestureDetector(
       onTap: () {
         if (title == "次数运动") {
-          showDialog(context: context, builder: (c) => NumPadDialog());
+          showDialog(
+              context: context,
+              builder: (c) => NumPadDialog((times, title) {
+                    model.addAction(times, title);
+                  }));
         } else if (title == "时间运动") {
-        } else if (title == "休息") {}
+        } else if (title == "休息") {
+          model.addRelax(30);
+        }
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -108,73 +145,6 @@ class _NewExercisePageState extends State<NewExercisePage> {
             ),
             color: colors[index % 5]),
         margin: EdgeInsets.all(4),
-      ),
-    );
-  }
-}
-
-class NumPadDialog extends StatefulWidget {
-  @override
-  _NumPadDialogState createState() => _NumPadDialogState();
-}
-
-class _NumPadDialogState extends State<NumPadDialog> {
-  String num = "";
-  final nums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Center(
-        child: Text("添加次数运动"),
-      ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Container(
-            height: 40,
-            child: Text(
-              num,
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, wordSpacing: 8),
-            ),
-            alignment: Alignment.center,
-            decoration: RoundDecoration.circular(color: Colors.grey.shade400, radius: 5),
-          ),
-          SizedBox(height: 10),
-          Wrap(
-            alignment: WrapAlignment.center,
-            children: nums
-                .map((e) => GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          if (num.length >= 3) {
-                            Flushbar(
-                              title:  "提示",
-                              message:  "一次性不要做太多哦~",
-                              duration:  Duration(seconds: 1),
-
-                            )..show(context);
-                            return;
-                          }
-                          num += e.toString();
-                        });
-                      },
-                      child: Container(
-                        width: 60,
-                        margin: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-                        decoration: RoundDecoration.circular(color: Colors.blue, radius: 4),
-                        alignment: Alignment.center,
-                        height: 50,
-                        child: Text(
-                          e.toString(),
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ))
-                .toList(),
-          ),
-        ],
       ),
     );
   }
